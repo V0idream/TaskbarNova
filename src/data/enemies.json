@@ -1,0 +1,7 @@
+[
+  {"id":"drone_scrap","name":"废料警戒无人机","hp":20,"attack":5,"defense":1,"rewardCredits":24,"lootTable":["weapon_scatter_01","radar_short_01"]},
+  {"id":"raider_light","name":"轨道掠夺艇","hp":30,"attack":8,"defense":3,"rewardCredits":42,"lootTable":["engine_vector_01","shield_bubble_01"]},
+  {"id":"sentry_old","name":"失控防卫哨舰","hp":42,"attack":11,"defense":5,"rewardCredits":68,"lootTable":["weapon_rail_01","shield_prism_01"]},
+  {"id":"echo_hunter","name":"回声猎手","hp":54,"attack":14,"defense":7,"rewardCredits":92,"lootTable":["radar_deep_01","engine_fold_01"]},
+  {"id":"anomaly_guard","name":"相位异常守卫","hp":72,"attack":18,"defense":9,"rewardCredits":140,"lootTable":["weapon_relic_01","shield_mirror_01","core_singularity_01"]}
+]

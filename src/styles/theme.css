@@ -1,0 +1,9 @@
+:root {
+  font-family: "Microsoft YaHei UI", "Noto Sans SC", system-ui, sans-serif;
+  color: #eaf7ff; background: transparent; font-synthesis: none;
+  --bg:#030713;--panel:rgba(8,24,46,.72);--panel-light:rgba(15,42,76,.66);
+  --primary:#38e8ff;--secondary:#8b5cff;--warning:#ffb347;--danger:#ff4d6d;--success:#63f5a8;
+  --text:#eaf7ff;--muted:#8fa9c7;--border:rgba(56,232,255,.38);--radius:11px;
+  --glow:0 0 22px rgba(56,232,255,.34), inset 0 0 18px rgba(56,232,255,.08);--fast:150ms ease-out;
+}
+*{box-sizing:border-box}html,body,#root{width:100%;height:100%;margin:0;overflow:hidden;background:transparent}body{font-size:14px}button,input,select{font:inherit}button{color:var(--text)}

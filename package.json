@@ -1,0 +1,43 @@
+{
+  "name": "taskbar-nova",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Taskbar Nova: 星舰少女 desktop game MVP",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "tsc -b && vite build && tsc -p electron/tsconfig.json",
+    "dist": "pnpm run build && electron-builder --win portable",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "zustand": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "concurrently": "latest",
+    "electron": "latest",
+    "electron-builder": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "wait-on": "latest"
+  },
+  "build": {
+    "appId": "com.taskbarnova.game",
+    "productName": "Taskbar Nova 星舰少女",
+    "directories": { "output": "release" },
+    "files": ["dist/**/*", "dist-electron/**/*", "build/icon.ico", "package.json"],
+    "asar": true,
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [{ "target": "portable", "arch": ["x64"] }],
+      "artifactName": "TaskbarNova-v${version}-Windows-x64.${ext}"
+    }
+  }
+}
