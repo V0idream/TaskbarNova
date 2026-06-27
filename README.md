@@ -6,7 +6,7 @@
 
 ## 下载
 
-从 [Releases](https://github.com/Sakuramble/TaskbarNova/releases) 下载 `TaskbarNova-1.0-Windows-x64.exe`，无需安装即可运行。
+从 [Releases](https://github.com/V0idream/TaskbarNova/releases) 下载 `TaskbarNova-1.0-Windows-x64.exe`，无需安装即可运行。
 
 支持 Windows 10/11 x64。
 
