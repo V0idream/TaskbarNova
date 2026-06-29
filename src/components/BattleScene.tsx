@@ -75,14 +75,19 @@ export function BattleScene(){
     const interceptMissilesByBeam=(beam:Beam)=>{
       for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];if(b.owner===beam.owner||b.family!=='missile')continue;const withinX=b.x>=Math.min(beam.x1,beam.x2)&&b.x<=Math.max(beam.x1,beam.x2);if(withinX&&Math.abs(b.y-beam.y1)<14+beam.width){addBurst(b.x,b.y,beam.color,12);bullets.splice(i,1);}}
     };
+    const effectivePlayerAttack=ship.attack<=36?ship.attack:36+Math.sqrt(ship.attack-36)*3.2;
+    const cappedPlayerDamage=(raw:number,target:EnemyUnit,family:WeaponFamily)=>Math.min(
+      raw,
+      target.maxHp*(family==='missile'?battleTuning.playerMissileMaxHitRatio:battleTuning.playerOtherMaxHitRatio)
+    );
     const firePlayerWeapon=(weapon:WeaponProfile, enemy:EnemyUnit, playerX:number, y:number, w:number)=>{
       shots++;
       const critical=Math.random()<loadout.criticalChance;
-      const damage=ship.attack*weapon.damageMultiplier*(critical?1.7:1);
+      const damage=effectivePlayerAttack*weapon.damageMultiplier*battleTuning.playerDamageScale*(critical?battleTuning.playerCriticalMultiplier:1);
       if(weapon.instant){
         const beam={x1:playerX+78,y1:y,x2:w-28,y2:y,life:.13,color:weapon.projectileColor,owner:'player' as const,width:weapon.variant==='scatter'?10+weapon.visualTier*1.3:4+weapon.visualTier*.85};
         beams.push(beam); interceptMissilesByBeam(beam);
-        if(visibleEnemy(enemy,w)&&Math.abs(enemy.y-y)<weapon.hitWidth&&enemy.x>playerX){enemy.hp-=damage;hits++;addBurst(enemy.x,enemy.y,weapon.projectileColor,critical?20:11)}
+        if(visibleEnemy(enemy,w)&&Math.abs(enemy.y-y)<weapon.hitWidth&&enemy.x>playerX){enemy.hp-=cappedPlayerDamage(damage,enemy,weapon.family);hits++;addBurst(enemy.x,enemy.y,weapon.projectileColor,critical?20:11)}
         return;
       }
       const distance=Math.max(120,enemy.x-(playerX+75));
@@ -98,7 +103,7 @@ export function BattleScene(){
       const distance=Math.max(40,missile.x-(playerX+75));
       const timeToImpact=distance/Math.max(1,weapon.projectileSpeed-missile.vx);
       const aimY=missile.y+missile.vy*Math.max(0,timeToImpact);
-      bullets.push({id:bulletId++,x:playerX+75,y,vx:weapon.projectileSpeed,vy:clamp((aimY-y)/Math.max(.12,timeToImpact),-520,520),damage:ship.attack*weapon.damageMultiplier,owner:'player',family:'kinetic',color:weapon.projectileColor,guidance:0,tier:weapon.visualTier,life:2.5,phase:0});
+      bullets.push({id:bulletId++,x:playerX+75,y,vx:weapon.projectileSpeed,vy:clamp((aimY-y)/Math.max(.12,timeToImpact),-520,520),damage:effectivePlayerAttack*weapon.damageMultiplier*battleTuning.playerDamageScale,owner:'player',family:'kinetic',color:weapon.projectileColor,guidance:0,tier:weapon.visualTier,life:2.5,phase:0});
       addBurst(playerX+60,y,weapon.projectileColor,3+weapon.visualTier);
     };
     const fireEnemy=(enemy:EnemyUnit, playerX:number, enemyX:number)=>{
@@ -174,7 +179,7 @@ export function BattleScene(){
           if(bullet.owner==='player'){
             const missileFuse=bullet.family==='missile'?battleTuning.playerMissileProximityBase+bullet.tier*battleTuning.playerMissileProximityPerTier:0;
             const target=units.find(unit=>visibleEnemy(unit,w)&&Math.abs(bullet.x-unit.x)<sizeOf(unit)*.42+missileFuse&&Math.abs(bullet.y-unit.y)<sizeOf(unit)*.28+missileFuse);
-            if(target){target.hp-=bullet.damage;hits++;addBurst(bullet.x,bullet.y,bullet.color,bullet.family==='missile'?20+bullet.tier*4:8+bullet.tier);if(bullet.family==='missile')addExplosion(bullet.x,bullet.y,48+bullet.tier*10,bullet.tier);bullets.splice(i,1);continue}
+            if(target){target.hp-=cappedPlayerDamage(bullet.damage,target,bullet.family);hits++;addBurst(bullet.x,bullet.y,bullet.color,bullet.family==='missile'?20+bullet.tier*4:8+bullet.tier);if(bullet.family==='missile')addExplosion(bullet.x,bullet.y,48+bullet.tier*10,bullet.tier);bullets.splice(i,1);continue}
           } else if(Math.abs(bullet.x-playerX)<54&&Math.abs(bullet.y-playerY)<30){
             const result=applyDamage(bullet.damage,shield,hull,bullet.family==='missile'?loadout.evasion*.9:loadout.evasion*.35);
             shield=result.shield;hull=result.hull;addBurst(bullet.x,bullet.y,result.evaded?'#8fa9c7':shield>0?'#38e8ff':'#ff4d6d',result.evaded?5:11);if(bullet.family==='missile')addExplosion(bullet.x,bullet.y,46,bullet.tier);bullets.splice(i,1);continue;
